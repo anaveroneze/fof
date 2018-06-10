@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1528596247 source:/home/ana/Documentos/PIBIC-INPE/AlgoritmosFoF/viewCG/gl_7_lookat/src/lookat.cpp
+	<GL/glut.h>
+	<stdlib.h>
+	<ctype.h>
+	<stdio.h>
+	<math.h>
+	<time.h>
+
