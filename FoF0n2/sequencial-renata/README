@@ -1,0 +1,5 @@
+06/2018
+
+- Usar esse FoF O(n²) como base para testes de execução serial em CPU ("FoFOn2.cpp")
+  ele mostra o tempo de execução em usec (microsegundo - 10^(-6))
+  $ ./exec input_file raio_percolação

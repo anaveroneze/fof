@@ -1,0 +1,4 @@
+Versão do FoF onde o usuário pode fazer a execução do fof serial ou  a versão para OpenACC que divide em quadros (grupos) de partículas entre as máquinas, faz o FoF nelas e depois as reune para observar zonas de fronteira.
+
+Compilação:
+$ gcc main.c fofnovo.c fofnovo.h -o exec
