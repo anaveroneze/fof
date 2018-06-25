@@ -15,17 +15,19 @@ Autor: Ana Luisa Veroneze Solórzano
 #define original false
 #define novo true
 
-//---------------------------------------------------------------------------
 int  *igru, N;
 float  *x, *y, *z, *v1, *v2, *v3;
 float max_x, min_x, max_y, min_y, max_z, min_z;
-//---------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------
+/********************* Cálculo do tempo em usec *****************/
+//---------------------------------------------------------------------------
 long getTime(){
   struct timeval time;
   gettimeofday(&time, (struct timezone *) NULL);
   return time.tv_sec*1000000 + time.tv_usec;
 }
+
 //---------------------------------------------------------------------------
 /********************* Lendo o arquivo de dados de entrada *****************/
 //---------------------------------------------------------------------------
@@ -34,22 +36,21 @@ bool LeDados(char *filename){
   FILE  *file;
   file = fopen(filename,"rt");
 
-  //Número de partículas
+  //Número total de partículas
   fscanf (file, "%d", &N);
 
   //********* alocando memória************//
-  igru  = new int [N];  // índice do grupo
-  x  = new float [N];  // posição x da partícula;
-  y  = new float [N];  // posição y da partícula;
-  z  = new float [N];  // posição z da partícula
-  v1 = new float [N];  // coordenada x da velocidade
-  v2 = new float [N];  // coordenada y da velocidade
-  v3 = new float [N];  // coordenada z da velocidade
+  igru  = malloc(sizeof(int)*N);  // índice do grupo
+  x  = malloc(sizeof(int)*N);  // posição x da partícula;
+  y  = malloc(sizeof(int)*N);  // posição y da partícula;
+  z  = malloc(sizeof(int)*N);  // posição z da partícula
+  v1 = malloc(sizeof(int)*N);  // coordenada x da velocidade
+  v2 = malloc(sizeof(int)*N);  // coordenada y da velocidade
+  v3 = malloc(sizeof(int)*N);  // coordenada z da velocidade
 
   int m;
-  //set valores minimos e máximos
   fscanf (file, "%d %f %f %f %f %f %f", &m, &x[0], &y[0], &z[0], &v1[0], &v2[0], &v3[0]);
-  printf("0 X: %.5f Y: %.5f Z: %.5f\n", x[0], y[0], z[0]);
+  //printf("0 X: %.5f Y: %.5f Z: %.5f\n", x[0], y[0], z[0]);
   max_x = x[0];
   max_y = y[0];
   max_z = z[0];
@@ -60,7 +61,7 @@ bool LeDados(char *filename){
 
   for (int i = 1 ; i < N ; i++){
     fscanf (file, "%d %f %f %f %f %f %f", &m, &x[i], &y[i], &z[i], &v1[i], &v2[i], &v3[i]);
-    printf("%d X: %.5f Y: %.5f Z: %.5f\n", i, x[i], y[i], z[i]);
+    //printf("%d X: %.5f Y: %.5f Z: %.5f\n", i, x[i], y[i], z[i]);
     igru[i] = 0;
 
     if (x[i] > max_x)
@@ -77,12 +78,13 @@ bool LeDados(char *filename){
         min_z = z[i];
   }
 
+  printf("\nMaximos e Minimos:\n\t x_max : %f \t y_max: %f \t z_max: %f \n\t x_min : %f \t y_min: %f \t z_min: %f \n", max_x, max_y, max_z, min_x, min_y, min_z);
   fclose (file);
   return false;
 }
 
 //---------------------------------------------------------------------------
-/**************************** Realiza o agrupamento ******************************/
+/************************* Executando o FoF *********************************/
 //---------------------------------------------------------------------------
 void Friends(float rperc){
 
@@ -111,7 +113,7 @@ void Friends(float rperc){
     }
   }
 
-/********************escrevendo arquivo de saida ************************/
+/******************** escrevendo arquivo de saida ************************/
 
   char str1[10],str2[10], str3[10];
 
@@ -143,7 +145,7 @@ void Friends(float rperc){
   int nn, si, mult;
   int *Ngr;
 
-  Ngr  = new int [k+1];
+  Ngr  = malloc(sizeof(int)*k+1);
     for ( nn = 1; nn <= k; nn++ ){ //Para todos os grupos
       mult = 0;
       for (si = 0; si < N; si++) //Para todas partículas
@@ -157,9 +159,7 @@ void Friends(float rperc){
   }
 
   printf("Grupos com massa maior que 1: %d \n", cont1);
-
-  delete Ngr;
-
+  free(Ngr);
 }
 
 //---------------------------------------------------------------------------
@@ -174,16 +174,15 @@ void LimpaMemoria(void){
   free(v2);
   free(v3);
 }
+
 //---------------------------------------------------------------------------
 /***************************************************************************/
 //---------------------------------------------------------------------------
-
 int main(int argc, char **argv){
   float  local_v[100], rperc;
   char *Arg1;
   long start_fof, stop_fof, start_read, stop_read, start_novo, stop_novo;
 
-  // executável arquivo raio
   if(argc != 3 ){
     puts( "Por favor, entre com o nome do arquivo de dados e o raio de percolação!" );
     exit(1);
@@ -213,6 +212,6 @@ int main(int argc, char **argv){
 #endif
 
   LimpaMemoria();
-  printf("Read time: %ld\n", (long)(stop_read-start_read));
+  printf("Reading time: %ld\n", (long)(stop_read-start_read));
   return 0;
 }
